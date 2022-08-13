@@ -55,7 +55,7 @@ describe('Start lottery', () => {
     );
     await expect(lotteryStateEnum).to.equal(openLotteryStatus);
   });
-  
+
   it('should set a usd entry fee', async () => {
     const { lotteryContract } = await loadFixture(deployLotteryFixture);
     const usdEntryInUSD = 51;
@@ -110,4 +110,9 @@ describe('Enter lottery', () => {
       })
     ).to.be.revertedWith('Not enough ETH');
   });
+
+  describe('End lottery', () => {
+
+    it('Picking a winner',()=>{})
+  })
 });
