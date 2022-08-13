@@ -1,6 +1,7 @@
 const { expect } = require('chai');
 const { loadFixture } = require('@nomicfoundation/hardhat-network-helpers');
 const { BigNumber } = require('ethers');
+const { getEthPriceAPI, getUsdEthPrice } = require('./utils');
 
 describe('Token contract', function () {
   async function deployLotteryFixture() {
@@ -9,7 +10,7 @@ describe('Token contract', function () {
     const linkWeiBigNumbered = BigNumber.from((0.1 * 1e18).toString());
     const lotteryContract = await Lottery.deploy(
       // '0x8A753747A1Fa494EC906cE90E9f37563A8AF630e' /*rinkeby*/,
-      '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419',/*mainnet*/
+      '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419' /*mainnet*/,
       '0x6168499c0cFfCaCD319c818142124B7A15E857ab',
       '0x01BE23585060835E02B77ef475b0Cc51aA1e0709',
       linkWeiBigNumbered,
@@ -72,17 +73,45 @@ describe('Token contract', function () {
     });
 
     it('should owner be the first user content in lottery', async () => {
-      const { lotteryContract, owner } = await loadFixture(
+      const { lotteryContract, owner, addr1 } = await loadFixture(
         deployLotteryFixture
-        );
+      );
 
+      const usdAmount = '50.1';
+      // add at least 10-20 cents more for gas fees
+
+      const {
+        result: { ethusd },
+      } = await getEthPriceAPI();
+      const entryAmount = getUsdEthPrice({ usd: usdAmount, ETH: ethusd });
       await lotteryContract.startLottery();
       await lotteryContract.enter({
-        value: ethers.utils.parseEther('50'),
+        value: ethers.utils.parseEther(entryAmount),
       });
 
       const firstPlayer = await lotteryContract.players(0);
       await expect(firstPlayer).to.equal(owner.address);
     });
+
+    // it('should owner be the first user content in lottery', async () => {
+    //   const { lotteryContract, owner, addr1 } = await loadFixture(
+    //     deployLotteryFixture
+    //   );
+
+    //   const usdAmount = '50.1';
+    //   // add at least 10-20 cents more for gas fees
+
+    //   const {
+    //     result: { ethusd },
+    //   } = await getEthPriceAPI();
+    //   const entryAmount = getUsdEthPrice({ usd: usdAmount, ETH: ethusd });
+    //   await lotteryContract.startLottery();
+    //   await lotteryContract.enter({
+    //     value: ethers.utils.parseEther(entryAmount),
+    //   });
+
+    //   const firstPlayer = await lotteryContract.players(0);
+    //   await expect(firstPlayer).to.equal(owner.address);
+    // });
   });
 });
