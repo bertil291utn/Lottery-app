@@ -3,6 +3,17 @@ const { loadFixture } = require('@nomicfoundation/hardhat-network-helpers');
 const { BigNumber } = require('ethers');
 const { getEthPriceAPI, getUsdEthPrice } = require('./utils');
 
+async function enterLotteryAction({ usdAmount, lotteryContract }) {
+  const {
+    result: { ethusd },
+  } = await getEthPriceAPI();
+  const entryAmount = getUsdEthPrice({ usd: usdAmount, ETH: ethusd });
+  await lotteryContract.startLottery();
+  await lotteryContract.enter({
+    value: ethers.utils.parseEther(entryAmount),
+  });
+}
+
 async function deployLotteryFixture() {
   const Lottery = await ethers.getContractFactory('Lottery');
   const [owner, addr1, addr2] = await ethers.getSigners();
@@ -77,17 +88,10 @@ describe('Enter lottery', () => {
   it('should be able to enter in lottery', async () => {
     const { lotteryContract, owner } = await loadFixture(deployLotteryFixture);
 
-    const usdAmount = '50.1';
+    const usdAmount = '50.9';
     // add at least 10-20 cents more for gas fees
 
-    const {
-      result: { ethusd },
-    } = await getEthPriceAPI();
-    const entryAmount = getUsdEthPrice({ usd: usdAmount, ETH: ethusd });
-    await lotteryContract.startLottery();
-    await lotteryContract.enter({
-      value: ethers.utils.parseEther(entryAmount),
-    });
+    await enterLotteryAction({ usdAmount, lotteryContract });
 
     const firstPlayer = await lotteryContract.players(0);
     await expect(firstPlayer).to.equal(owner.address);
@@ -112,7 +116,18 @@ describe('Enter lottery', () => {
   });
 
   describe('End lottery', () => {
-
-    it('Picking a winner',()=>{})
-  })
+    it('Picking a winner', async () => {
+      const { lotteryContract } = await loadFixture(deployLotteryFixture);
+      //START LOTTERY
+      await enterLotteryAction({ usdAmount: '50.9', lotteryContract });
+      //END LOTTERY
+      //CHECK THIS EVENT RequestRandomNess
+      // await lotteryContract.endLottery();
+      // await expect(lotteryContract.endLottery()).to.emit(
+      //   lotteryContract,
+      //   'RequestRandomNess'
+      // );
+      //ALSO CHECK recentWinner balance greater than zero
+    });
+  });
 });
