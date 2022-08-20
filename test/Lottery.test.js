@@ -18,13 +18,13 @@ async function deployLotteryFixture() {
   const Lottery = await ethers.getContractFactory('Lottery');
   const [owner, addr1, addr2] = await ethers.getSigners();
   const linkWeiBigNumbered = BigNumber.from((0.1 * 1e18).toString());
+  //TODO: deploy with mocked contracts
   const lotteryContract = await Lottery.deploy(
-    // '0x8A753747A1Fa494EC906cE90E9f37563A8AF630e' /*rinkeby*/,
     '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419' /*mainnet*/,
-    '0x6168499c0cFfCaCD319c818142124B7A15E857ab',
-    '0x01BE23585060835E02B77ef475b0Cc51aA1e0709',
+    '0xf0d54349aDdcf704F77AE15b96510dEA15cb7952',
+    '0x514910771AF9Ca656af840dff83E8264EcF986CA',
     linkWeiBigNumbered,
-    '0x2ed0feb3e7fd2022120aa84fab1945545a9f2ffc9076fd6156fa96eaff4c1311'
+    '0xAA77729D3466CA35AE8D28B3BBAC7CC36A5031EFDC430821C02BC31A238AF445'
   );
 
   await lotteryContract.deployed();
@@ -123,10 +123,10 @@ describe('Enter lottery', () => {
       //END LOTTERY
       //CHECK THIS EVENT RequestRandomNess
       // await lotteryContract.endLottery();
-      // await expect(lotteryContract.endLottery()).to.emit(
-      //   lotteryContract,
-      //   'RequestRandomNess'
-      // );
+      await expect(lotteryContract.endLottery()).to.emit(
+        lotteryContract,
+        'RequestRandomNess'
+      );
       //ALSO CHECK recentWinner balance greater than zero
     });
   });
