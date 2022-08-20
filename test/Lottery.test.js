@@ -2,6 +2,8 @@ const { expect } = require('chai');
 const { loadFixture } = require('@nomicfoundation/hardhat-network-helpers');
 const { BigNumber } = require('ethers');
 const { getEthPriceAPI, getUsdEthPrice } = require('./utils');
+const IERC20_SOURCE = require('./ERC20.abi.json');
+const LINK_TOKEN_ADDRESS_MAINNET = '0x514910771AF9Ca656af840dff83E8264EcF986CA';
 
 async function enterLotteryAction({ usdAmount, lotteryContract }) {
   const {
@@ -22,8 +24,8 @@ async function deployLotteryFixture() {
   const lotteryContract = await Lottery.deploy(
     '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419' /*mainnet*/,
     '0xf0d54349aDdcf704F77AE15b96510dEA15cb7952',
-    '0x514910771AF9Ca656af840dff83E8264EcF986CA',
-    linkWeiBigNumbered,
+    LINK_TOKEN_ADDRESS_MAINNET,
+    ethers.utils.parseEther('0.1'),
     '0xAA77729D3466CA35AE8D28B3BBAC7CC36A5031EFDC430821C02BC31A238AF445'
   );
 
@@ -116,25 +118,48 @@ describe('Enter lottery', () => {
   });
 
   describe('End lottery', () => {
-    
     it("should revert with 'Current contract has no enough LINK token' error message", async () => {
       const { lotteryContract } = await loadFixture(deployLotteryFixture);
       await enterLotteryAction({ usdAmount: '50.9', lotteryContract });
-      await expect(lotteryContract.endLottery()).to.revertedWith('Current contract has no enough LINK token')
-    })
+      await expect(lotteryContract.endLottery()).to.revertedWith(
+        'Current contract has no enough LINK token'
+      );
+    });
 
-    it('Picking a winner', async () => {
-      const { lotteryContract } = await loadFixture(deployLotteryFixture);
+    it('should pick a winner', async () => {
+      const { lotteryContract, owner } = await loadFixture(
+        deployLotteryFixture
+      );
       //START LOTTERY
       await enterLotteryAction({ usdAmount: '50.9', lotteryContract });
-      //END LOTTERY
-      //CHECK THIS EVENT RequestRandomNess
+      //SEND LINK TO CURRENT CONTRACT
+      await owner.sendTransaction({
+        to: await lotteryContract.address,
+        value: ethers.utils.parseEther('1'),
+        gasLimit: ethers.utils.hexlify(30000),
+        gasPrice: ethers.utils.hexlify(parseInt(await owner.getGasPrice())),
+      });
+
+      // const linkContract = await ethers.getContractAt(
+      //   IERC20_SOURCE,
+      //   LINK_TOKEN_ADDRESS_MAINNET
+      // );
+      // await linkContract
+      //   .connect(owner)
+      //   .transfer(lotteryContract.address, ethers.utils.parseEther('1'), {
+      //     value: ethers.utils.parseEther('1'),
+      //   });
+      // // const resp = await linkContract.balanceOf(lotteryContract.address);
+      // console.log('🚀 ~ file: Lottery.test.js ~ line 146 ~ it ~ resp', resp);
       // await lotteryContract.endLottery();
+      //CHECK THIS EVENT RequestRandomNess
       // await expect(lotteryContract.endLottery()).to.emit(
       //   lotteryContract,
       //   'RequestRandomNess'
       // );
       //ALSO CHECK recentWinner balance greater than zero
     });
+    //TODO: check mock hardhat-starter-kit contracts
+    //https://github.com/smartcontractkit/hardhat-starter-kit
   });
 });

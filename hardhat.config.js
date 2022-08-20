@@ -5,7 +5,7 @@ require("@nomiclabs/hardhat-waffle")
 require('dotenv').config();
 module.exports = {
   solidity: "0.8.3",
-  defaultNetwork: "hardhat",
+  defaultNetwork: "rinkeby",
   networks: {
     hardhat: {
       forking: {
