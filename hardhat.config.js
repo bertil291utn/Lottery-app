@@ -2,9 +2,17 @@
 require('@nomiclabs/hardhat-ethers');
 require('@nomiclabs/hardhat-etherscan');
 require("@nomiclabs/hardhat-waffle")
+require("@appliedblockchain/chainlink-plugins-fund-link")
 require('dotenv').config();
 module.exports = {
-  solidity: "0.8.3",
+  solidity: { compilers: [
+    {
+      version: "0.4.24",
+    },
+    {
+      version: "0.8.3",
+    }
+  ]},
   defaultNetwork: "hardhat",
   networks: {
     hardhat: {
