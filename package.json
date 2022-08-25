@@ -22,6 +22,7 @@
     "hardhat": "^2.10.1"
   },
   "dependencies": {
+    "@appliedblockchain/chainlink-plugins-fund-link": "^0.0.3",
     "@nomiclabs/hardhat-waffle": "^2.0.3",
     "chai-ethers": "^0.0.1",
     "node-fetch": "2"
