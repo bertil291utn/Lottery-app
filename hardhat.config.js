@@ -26,7 +26,7 @@ module.exports = {
       },
     ],
   },
-  defaultNetwork: 'hardhat',
+  // defaultNetwork: 'hardhat',
   networks: {
     hardhat: {
       forking: {
@@ -45,5 +45,20 @@ module.exports = {
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
     currency: 'USD',
+  },
+  namedAccounts: {
+    deployer: {
+      default: 0,
+      1: 0,
+      4: 0,
+    },
+    user2: {
+      default: 1,
+      4: 1,
+    },
+    user3: {
+      default: 2,
+      4: 2,
+    },
   },
 };
