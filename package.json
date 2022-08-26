@@ -26,6 +26,8 @@
     "@nomiclabs/hardhat-waffle": "^2.0.3",
     "chai-ethers": "^0.0.1",
     "hardhat-deploy": "^0.11.12",
-    "node-fetch": "2"
+    "hardhat-gas-reporter": "^1.0.8",
+    "node-fetch": "2",
+    "solidity-coverage": "^0.7.21"
   }
 }
