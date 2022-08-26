@@ -3,7 +3,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  if (chainId === 31337) {
+  if (chainId == 31337) {
   log('Local Network Detected, Deploying external contracts');
   const linkToken = await deploy('LinkToken', { from: deployer, log: true });
   await deploy('VRFCoordinatorMock', {

@@ -10,7 +10,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId, ethers }) =
   let vrfCoordinatorAddress;
   let additionalMessage = "";
 
-  if (chainId === 31337) {
+  if (chainId == 31337) {
     linkToken = await get("LinkToken");
     VRFCoordinatorMock = await get("VRFCoordinatorMock");
     linkTokenAddress = linkToken.address;
@@ -27,7 +27,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId, ethers }) =
   const keyHash = config[chainId].keyHash;
   const fee = config[chainId].fee;
 
-  const lottery = await deploy("Lottery", {
+  const lottery = await deploy("LotteryGame", {
     from: deployer,
     args: [
       vrfCoordinatorAddress,

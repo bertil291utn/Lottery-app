@@ -6,6 +6,11 @@ require('@appliedblockchain/chainlink-plugins-fund-link');
 require('hardhat-gas-reporter');
 require('solidity-coverage');
 require('hardhat-deploy');
+
+require("./tasks/getLotteryData");
+require("./tasks/createLottery");
+require("./tasks/declareWinner");
+
 require('dotenv').config();
 module.exports = {
   solidity: {
