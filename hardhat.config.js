@@ -18,7 +18,7 @@ module.exports = {
       },
     ],
   },
-  defaultNetwork: 'hardhat',
+  defaultNetwork: 'rinkeby',
   networks: {
     hardhat: {
       forking: {
