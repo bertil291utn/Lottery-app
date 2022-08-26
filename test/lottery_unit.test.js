@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 const { ethers, getChainId, deployments } = require("hardhat");
 const { config, autoFundCheck } = require("../config/chainlink.config");
-
+//TODO: work with hardhat deploy and check LotteryGame.sol and this unit test; follow this approach to make possible lottery SC
 describe("LotteryGame Unit Tests", () => {
   let LotteryGame;
   let lotteryGame;
